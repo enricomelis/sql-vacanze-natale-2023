@@ -49,7 +49,10 @@ COUNT(*) AS esami_superati,
 COUNT(DISTINCT esame.studente_matricola) AS studenti_sostenuti
 FROM esame JOIN corso ON esame.corso_sigla
 WHERE esame.voto >= 18
-GROUP BY corso.nome_corso, esame.anno_accademico, esame.sessione
+GROUP BY 
+    corso.nome_corso, 
+    esame.anno_accademico, 
+    esame.sessione
 
 -- 2) 
 
@@ -64,7 +67,11 @@ FROM esame
 JOIN corso ON esame.corso_sigla = corso.sigla
 JOIN studente ON esame.studente_matricola = studente.matricola
 WHERE esame.voto < 18
-GROUP BY corso.nome_corso, esame.anno_accademico, esame.sessione, studente.nome_uni_laurea
+GROUP BY 
+    corso.nome_corso, 
+    esame.anno_accademico, 
+    esame.sessione, 
+    studente.nome_uni_laurea
 
 -- 3)
 
@@ -86,18 +93,17 @@ GROUP BY studente.sesso
 
 -- 4)
 
-SELECT
-    AVG(esame.voto) AS voto_medio, 
-    COUNT(DISTINCT esame.studente_matricola) AS studenti_sostenuti, 
-    
-    corso.nome_corso, 
-    esame.sessione, 
-    esame.anno_accademico
+SELECT 
+  corso.nome_corso, 
+  esame.sessione,
+  AVG(IF(esame.voto >= 18, esame.voto, NULL)) AS voto_medio_superati,
+  COUNT(DISTINCT esame.studente_matricola) AS numero_studenti_sostenuto,
+  SUM(esame.voto >= 18) / COUNT(esame.studente_matricola) * 100 AS percentuale_superati
+
 FROM esame
 JOIN studente ON esame.studente_matricola = studente.matricola
 JOIN corso ON esame.corso_sigla = corso.sigla
-WHERE 
-    esame.voto >= 18
-    AND esame.anno_accademico = 2023
+WHERE AND esame.anno_accademico = 2023
 GROUP BY esame.sessione
+
 -- 5)
