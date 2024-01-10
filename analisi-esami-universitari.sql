@@ -45,8 +45,8 @@ SELECT
   corso.nome_corso, 
   esame.anno_accademico, 
   esame.sessione, 
-COUNT(*) AS esami_superati, 
-COUNT(DISTINCT esame.studente_matricola) AS studenti_sostenuti
+  COUNT(*) AS esami_superati, 
+  COUNT(DISTINCT esame.studente_matricola) AS studenti_sostenuti
 FROM esame JOIN corso ON esame.corso_sigla
 WHERE esame.voto >= 18
 GROUP BY 
